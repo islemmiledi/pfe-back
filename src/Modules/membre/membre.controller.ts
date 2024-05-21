@@ -12,6 +12,8 @@ import { CreateMembreDto } from './dto/create-membre.dto';
 import { UpdateMembreDto } from './dto/update-membre.dto';
 import { Membre } from './entities/membre.entity';
 import { CreateUserDto } from '../user/dto/create-user.dto';
+import { GetUser } from '../user/decorator/user.decorator';
+import { User } from '../user/entities/user.entity';
 
 @Controller('membre')
 export class MembreController {
@@ -21,13 +23,18 @@ export class MembreController {
   async create(
     @Body() createMembreDto: CreateMembreDto,
     @Body() createUserDto: CreateUserDto,
+    @GetUser() user: User,
   ) {
-    return await this.membreService.create(createMembreDto, createUserDto);
+    return await this.membreService.create(
+      createMembreDto,
+
+      user,
+    );
   }
 
   @Get('/members') // Si vous voulez garder '/members' comme chemin, assurez-vous qu'il correspond à la structure de votre API
-  async findAll() {
-    return await this.membreService.findAll();
+  async findAll(@GetUser() user: User) {
+    return await this.membreService.findAll(user);
   }
 
   @Get(':id') // Utilisez le paramètre 'id' dans l'URL

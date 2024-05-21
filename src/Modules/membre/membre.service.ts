@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateMembreDto } from './dto/create-membre.dto';
 import { UpdateMembreDto } from './dto/update-membre.dto';
 import { Membre } from './entities/membre.entity'; // Assurez-vous que le chemin est correct
@@ -12,41 +12,57 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class MembreService {
   constructor(
-    @InjectRepository(Membre) private readonly _membreRepo: Repository<Membre>,
-    @InjectRepository(User) private readonly _userRepo: Repository<User>,
+    @InjectRepository(Membre) private readonly membreRepo: Repository<Membre>,
+    @InjectRepository(User) private readonly userRepo: Repository<User>,
   ) {}
 
-  async create(createMembreDto: CreateMembreDto, createUserDto: CreateUserDto) {
-    const newUser = await this._userRepo.create(createUserDto);
-    // Hash password
-    const salt = await bcrypt.genSalt();
-    const passwordHash = createUserDto.password;
-    const hash = await bcrypt.hash(passwordHash, salt);
-
-    // Save user
-    hash && (newUser.password = hash);
-    const savedUser = await this._userRepo.save(newUser);
-
-    const newMembre = await this._membreRepo.create({
-      user: savedUser,
-      ...createMembreDto,
+  async create(
+    createMembreDto: CreateMembreDto,
+    createUserDto: CreateUserDto,
+  ): Promise<Membre> {
+    // Vérification de l'existence du membre
+    const existingMembre = await this.membreRepo.findOne({
+      where: { Nom: createMembreDto.Nom },
     });
-    return await this._membreRepo.save(newMembre);
+
+    if (existingMembre) {
+      throw new ConflictException('Nom already exists');
+    }
+
+    // Création de l'utilisateur
+    const newUser = this.userRepo.create(createUserDto);
+
+    // Hashage du mot de passe
+    const salt = await bcrypt.genSalt();
+    const hash = await bcrypt.hash(createUserDto.password, salt);
+    newUser.password = hash;
+
+    // Sauvegarde de l'utilisateur
+    const savedUser = await this.userRepo.save(newUser);
+
+    // Création du membre
+    const newMembre = this.membreRepo.create({
+      ...createMembreDto,
+      user: savedUser,
+    });
+
+    // Sauvegarde du membre
+    return await this.membreRepo.save(newMembre);
   }
 
-  async findAll(): Promise<Membre[]> {
-    return await this._membreRepo.find();
+  async findAll(user: User): Promise<Membre[]> {
+    return await this.membreRepo.find({});
   }
 
   async findOne(id: string): Promise<Membre> {
-    return await this._membreRepo.findOneBy({ id: id });
+    return await this.membreRepo.findOneBy({ id });
   }
 
-  async update(id: string, updateMembreDto: UpdateMembreDto) {
-    return await this._membreRepo.update(id, updateMembreDto);
+  async update(id: string, updateMembreDto: UpdateMembreDto): Promise<void> {
+    await this.membreRepo.update(id, updateMembreDto);
   }
 
-  async remove(id: string) {
-    return await this._membreRepo.delete(id);
+  async remove(id: string): Promise<void> {
+    await this.membreRepo.delete(id);
   }
 }

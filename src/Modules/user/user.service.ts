@@ -8,7 +8,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { EmailService } from '../mailer/mailer.service';
@@ -70,11 +70,16 @@ export class UserService {
     }
   }
 
-  async findOneWithId(id: string) {
+  async findOneWithId(user: User) {
     try {
-      const user = await this._userRepo.findOne({ where: { id: id } });
-      delete user.password;
-      return user;
+      const userone = await this._userRepo
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.salle', 'salle')
+        .select(['user', 'salle.id']) // Select all fields from user, only id from salle
+        .where('user.id = :id', { id: user.id })
+        .getOne();
+      delete userone.password;
+      return userone;
     } catch (error) {
       console.error('Error finding user:', error);
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -94,7 +99,7 @@ export class UserService {
     return users;
   }
 
-  async findAllWithPagination(page: number) {
+  async findAllWithPagination(page: number, user: User) {
     const ITEMS_PER_PAGE = 8;
     const skip = (page - 1) * ITEMS_PER_PAGE;
 
@@ -102,6 +107,8 @@ export class UserService {
     const users = await this._userRepo.find({
       skip: skip,
       take: ITEMS_PER_PAGE,
+      where: { id: Not(user.id) },
+      relations: ['salle'],
     });
 
     // Cleaning up user data (e.g., removing passwords)
@@ -111,7 +118,9 @@ export class UserService {
     });
 
     // Counting total number of users
-    const totalUsers = await this._userRepo.count();
+    const totalUsers = await this._userRepo.count({
+      where: { id: Not(user.id) },
+    });
 
     // Calculating total pages
     const totalPages = Math.ceil(totalUsers / ITEMS_PER_PAGE);

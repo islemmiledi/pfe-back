@@ -28,6 +28,8 @@ export class AuthService {
       sub: { id: user.id, email: user.email, role: user.role },
     };
     return {
+      success: true,
+      role: user.role,
       accessToken: this.jwtService.sign(payload),
       refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
     };

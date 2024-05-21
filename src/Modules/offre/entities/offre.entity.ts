@@ -3,24 +3,24 @@ import { Node } from 'src/common/node.entity';
 import { Salle } from 'src/Modules/salle/entities/salle.entity';
 import { User } from 'src/Modules/user/entities/user.entity';
 
-@Entity('footers')
-export class Footer extends Node {
-  @Column({ length: 200 })
-  Adresse: string;
+@Entity('offres')
+export class Offre extends Node {
+  @Column({ type: 'varchar', length: 255 })
+  typeoffre: string;
 
-  @Column({ length: 20 })
-  NumerodeTelephone: string;
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  prix: number;
 
   @Column({ type: 'text' })
-  TempsDeTravail: string;
+  description: string;
 
-  @ManyToOne(() => Salle, (salle) => salle.footers, { eager: false })
+  @ManyToOne(() => Salle, (salle) => salle.offres, { eager: false })
   salle: Salle;
 
   @JoinColumn() // specify the name of the column in the junction tableColumn()
   salleId: string;
 
-  @ManyToOne(() => User, (user) => user.footers, {
+  @ManyToOne(() => User, (user) => user.offres, {
     eager: false,
     onDelete: 'CASCADE',
   })

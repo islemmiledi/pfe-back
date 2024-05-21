@@ -5,6 +5,7 @@ import { Coach } from './entities/coach.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class CoachService {
@@ -13,7 +14,11 @@ export class CoachService {
     private cloudinary: CloudinaryService,
   ) {}
 
-  async create(createCoachDto: CreateCoachDto, file: Express.Multer.File) {
+  async create(
+    createCoachDto: CreateCoachDto,
+    file: Express.Multer.File,
+    user: User,
+  ) {
     try {
       const existingUser = await this._coachRepo.findOne({
         where: { Nom: createCoachDto.Nom },
@@ -27,6 +32,7 @@ export class CoachService {
 
       const newCoach = await this._coachRepo.save({
         ...createCoachDto,
+        user,
         file: image.secure_url,
       });
 
@@ -39,8 +45,18 @@ export class CoachService {
     }
   }
 
-  async findAll(): Promise<Coach[]> {
-    return await this._coachRepo.find();
+  async findAll(user: User): Promise<Coach[]> {
+    return await this._coachRepo.find({
+      where: { userId: user.id },
+      order: { Nom: 'ASC' },
+    });
+  }
+
+  async getCoachsByUser(user: User) {
+    return await this._coachRepo.find({
+      where: { userId: user.id },
+      order: { createdAt: 'ASC' },
+    });
   }
 
   async findOne(id: string): Promise<Coach> {

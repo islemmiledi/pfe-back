@@ -7,7 +7,7 @@ import {
 } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
 
-require('dotenv').config();
+require('dotenv').config({ path: '/.env' });
 async function bootstrap() {
   // Ajoutez cette ligne pour charger les variables d'environnement
   const app: NestExpressApplication =

@@ -8,8 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { ProduitModule } from './modules/produit/produit.module';
 import { OrdreModule } from './modules/ordre/ordre.module';
 import { FooterModule } from './modules/footer/footer.module';
-import { AboutusModule } from './modules/aboutus/aboutus.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { AboutusModule } from './Modules/about-us/about-us.module';
 
 @Module({
   imports: [

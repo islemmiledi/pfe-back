@@ -36,7 +36,7 @@ export class UserController {
   }
 
   // @Roles(UserRoles.ADMIN, UserRoles.GERANT)
-  // @UseGuards(JwtGuard, RolesGuard)
+  @UseGuards(JwtGuard, RolesGuard)
   @Get('/users')
   async findAll(@Body() salle: string) {
     return await this.userService.findAll(salle);
@@ -44,13 +44,16 @@ export class UserController {
   // @SetMetadata(UserRoles, [UserRoles.GERANT])
   @UseGuards(JwtGuard)
   @Get('/users/pagination')
-  async findAllWithPagination(@Query('page') page: number) {
-    return await this.userService.findAllWithPagination(page);
+  async findAllWithPagination(
+    @Query('page') page: number,
+    @GetUser() user: User,
+  ) {
+    return await this.userService.findAllWithPagination(page, user);
   }
-
-  @Get('/:id')
-  async findOneWithId(@Param('id') id: string) {
-    return await this.userService.findOneWithId(id);
+  @UseGuards(JwtGuard)
+  @Get('/oneuser')
+  async findOneWithId(@GetUser() user: User) {
+    return await this.userService.findOneWithId(user);
   }
 
   // @SetMetadata(UserRoles, [UserRoles.ADMIN])

@@ -11,6 +11,7 @@ import {
   Put,
   UseGuards,
   SetMetadata,
+  Query,
 } from '@nestjs/common';
 
 import { CreateCoachDto } from './dto/create-coach.dto';
@@ -20,24 +21,34 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Roles, RolesGuard } from 'src/auth/guards/roles.guard';
 import { UserRoles } from '../user/enum/user.enum';
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
+import { GetUser } from '../user/decorator/user.decorator';
+import { User } from '../user/entities/user.entity';
 
 @Controller('coach')
 export class CoachController {
   constructor(private readonly coachService: CoachService) {} // Correction ici
 
+  @UseGuards(JwtGuard)
   @Post('/create')
   @UseInterceptors(FileInterceptor('file'))
   async create(
     @Body() createCoachDto: CreateCoachDto,
     @UploadedFile() file: Express.Multer.File,
+    @GetUser() user: User,
   ) {
-    return await this.coachService.create(createCoachDto, file); // Correction ici
+    return await this.coachService.create(createCoachDto, file, user); // Correction ici
   }
-  @SetMetadata(UserRoles, [UserRoles.GERANT])
-  @UseGuards(JwtGuard, RolesGuard)
+  // @Roles(UserRoles.GERANT)
+  @UseGuards(JwtGuard)
   @Get('/coachs')
-  async findAll() {
-    return await this.coachService.findAll(); // Correction ici
+  async findAll(@GetUser() user: User) {
+    return await this.coachService.findAll(user); // Correction ici
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('coach-user')
+  async getCoachsByUser(@GetUser() user: User) {
+    return await this.coachService.getCoachsByUser(user);
   }
 
   @Get(':id') // Utilisez le paramètre 'id' dans l'URL

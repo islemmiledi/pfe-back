@@ -1,4 +1,5 @@
 import { IsString, IsNotEmpty, MaxLength, IsOptional } from 'class-validator';
+import { Salle } from 'src/Modules/salle/entities/salle.entity';
 
 export class CreateCoachDto {
   @IsString()
@@ -15,7 +16,9 @@ export class CreateCoachDto {
   @IsNotEmpty()
   @MaxLength(500)
   Description: string;
-
   @IsOptional()
   file: string;
+
+  @IsOptional()
+  salle: Salle;
 }

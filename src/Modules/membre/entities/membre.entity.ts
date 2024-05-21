@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   OneToOne,
   JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 import { Sexe } from '../enum/sexe.enum';
 import { Node } from 'src/common/node.entity';
@@ -36,4 +37,9 @@ export class Membre extends Node {
   @OneToOne(() => User)
   @JoinColumn()
   user: User;
+  // @ManyToOne(() => User, (user) => user.membres, { eager: false })
+  // user: User;
+
+  // @Column()
+  // userId: string;
 }
