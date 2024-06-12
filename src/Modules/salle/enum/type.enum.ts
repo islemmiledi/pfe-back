@@ -1,4 +1,4 @@
-export enum TypeAbonnement {
+export enum TypeTheme {
   PREMIUM = 'premium',
   SILVER = 'silver',
   GOLD = 'gold',

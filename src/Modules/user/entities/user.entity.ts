@@ -16,6 +16,7 @@ import { Offre } from 'src/Modules/offre/entities/offre.entity';
 import { Aboutus } from 'src/Modules/about-us/entities/about-us.entity';
 import { Footer } from 'src/modules/footer/entities/footer.entity';
 import { Home } from 'src/Modules/home/entities/home.entity';
+import { Produit } from 'src/modules/produit/entities/produit.entity';
 
 @Entity()
 export class User extends Node {
@@ -25,8 +26,8 @@ export class User extends Node {
   @Column()
   lastName: string;
 
-  @Column({ default: true }) //t7ot 7aja tochrot bech tet7at 7aja kif me theb number alphab
-  isActive: boolean;
+  @Column({ default: false }) //t7ot 7aja tochrot bech tet7at 7aja kif me theb number alphab
+  isGold: boolean;
 
   @Column({ nullable: false, unique: true })
   email: string;
@@ -78,6 +79,12 @@ export class User extends Node {
     cascade: true,
   })
   homes: Home[];
+
+  @OneToMany(() => Produit, (produits) => produits.user, {
+    eager: false,
+    cascade: true,
+  })
+  produits: Produit[];
   //permettant d'associer chaque utilisateur à une salle unique dans votre base de données
   // @OneToMany(() => Membre, (membres) => membres.user, {
   //   eager: false,

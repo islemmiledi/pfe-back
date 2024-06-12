@@ -1,20 +1,25 @@
 import { Node } from 'src/common/node.entity';
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
-import { TypeAbonnement } from '../enum/abonnement.enum';
 import { Program } from 'src/Modules/program/entities/program.entity';
 import { Coach } from 'src/Modules/coach/entities/coach.entity';
 import { Offre } from 'src/Modules/offre/entities/offre.entity';
 import { Footer } from 'src/modules/footer/entities/footer.entity';
 import { Aboutus } from 'src/Modules/about-us/entities/about-us.entity';
 import { Home } from 'src/Modules/home/entities/home.entity';
+import { TypeTheme } from '../enum/type.enum';
+import { Produit } from 'src/modules/produit/entities/produit.entity';
 
 @Entity()
 export class Salle extends Node {
   @Column()
   Nom: string;
 
-  // @Column({ type: 'enum', enum: TypeAbonnement, nullable: true })
-  // Typeabonnement: TypeAbonnement;
+  @Column({
+    type: 'enum',
+    enum: TypeTheme,
+    nullable: true,
+  })
+  Typetheme: TypeTheme;
 
   // @Column('simple-array') //t7ot 7aja tochrot bech tet7at 7aja kif me theb number alphab
   // Caracteristiques: string[];
@@ -60,4 +65,9 @@ export class Salle extends Node {
     eager: false,
   })
   homes: Home[];
+
+  @OneToMany(() => Produit, (produits) => produits.salle, {
+    eager: false,
+  })
+  produits: Produit[];
 }

@@ -3,7 +3,7 @@ import { Node } from 'src/common/node.entity';
 import { Salle } from 'src/Modules/salle/entities/salle.entity';
 import { User } from 'src/Modules/user/entities/user.entity';
 
-@Entity('footers')
+@Entity()
 export class Footer extends Node {
   @Column({ length: 200 })
   Adresse: string;

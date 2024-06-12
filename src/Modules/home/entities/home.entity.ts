@@ -9,7 +9,7 @@ import { Node } from 'src/common/node.entity'; // Assuming Node includes common 
 import { User } from 'src/Modules/user/entities/user.entity';
 import { Salle } from 'src/Modules/salle/entities/salle.entity';
 
-@Entity('home')
+@Entity()
 export class Home extends Node {
   @Column({ length: 255 })
   title: string;

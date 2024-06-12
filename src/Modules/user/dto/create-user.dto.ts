@@ -10,6 +10,7 @@ import {
 import { UserRoles } from '../enum/user.enum';
 import { IsIn } from 'class-validator';
 import { Salle } from 'src/Modules/salle/entities/salle.entity';
+import { Transform } from 'class-transformer';
 
 export class CreateUserDto {
   @IsString()
@@ -21,7 +22,8 @@ export class CreateUserDto {
   lastName: string;
   @IsOptional()
   @IsBoolean()
-  isActive: boolean;
+  @Transform(({ value }) => value === 'true')
+  isGold: boolean;
 
   @IsString()
   password: string;

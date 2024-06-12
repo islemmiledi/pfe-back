@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsUrl,
 } from 'class-validator';
+import { Salle } from 'src/Modules/salle/entities/salle.entity';
 
 export class CreateProduitDto {
   @IsNotEmpty()
@@ -16,14 +17,15 @@ export class CreateProduitDto {
   Description: string;
 
   @IsNotEmpty()
-  @IsNumber()
   Prix: number;
 
   @IsOptional()
-  @IsUrl()
-  Image?: string; // Marqué comme optionnel et doit être une URL valide si fourni.
+  file: string; // Marqué comme optionnel et doit être une URL valide si fourni.
 
-  @IsNotEmpty()
-  @IsString()
-  Categorie: string;
+  @IsOptional()
+  salle: Salle;
+
+  // @IsNotEmpty()
+  // @IsString()
+  // Categorie: string;
 }

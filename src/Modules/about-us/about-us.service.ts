@@ -54,8 +54,17 @@ export class AboutusService {
     return await this._aboutusRepo.findOneBy({ id: id });
   }
 
-  async update(id: string, updateAboutUsDto: UpdateAboutUsDto) {
-    return await this._aboutusRepo.update(id, updateAboutUsDto);
+  async update(
+    id: string,
+    file: Express.Multer.File,
+    updateAboutusDto: UpdateAboutUsDto,
+  ) {
+    const image = await this.cloudinary.uploadImage(file);
+
+    return await this._aboutusRepo.update(id, {
+      ...updateAboutusDto,
+      file: image.secure_url,
+    });
   }
 
   async remove(id: string) {

@@ -51,14 +51,14 @@ export class ProgramController {
     return this.programService.findOne(+id);
   }
 
-  @Post('update/:id')
+  @Post(':id')
   @UseInterceptors(FileInterceptor('file')) // 'file' is the name of the field in the form-data where the file will be uploaded from
   async update(
     @Param('id') id: string,
     @Body() updateProgramDto: UpdateProgramDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return await this.programService.update(id, updateProgramDto, file);
+    return await this.programService.update(id, file, updateProgramDto);
   }
 
   @Delete(':id')

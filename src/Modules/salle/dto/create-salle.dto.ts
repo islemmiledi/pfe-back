@@ -1,6 +1,6 @@
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { TypeAbonnement } from '../enum/abonnement.enum';
 import { Program } from 'src/Modules/program/entities/program.entity';
+import { TypeTheme } from '../enum/type.enum';
 
 export class CreateSalleDto {
   @IsString()
@@ -10,8 +10,8 @@ export class CreateSalleDto {
   // @IsNotEmpty()
   // Caracteristiques: string[];
 
-  // @IsEnum(TypeAbonnement, { message: 'Invalid type' })
-  // Typeabonnement: TypeAbonnement;
+  @IsEnum(TypeTheme, { message: 'Invalid type' })
+  Typetheme: TypeTheme;
 
   // @IsNotEmpty()
   // websites: string;

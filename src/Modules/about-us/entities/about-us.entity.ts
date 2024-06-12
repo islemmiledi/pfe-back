@@ -9,7 +9,7 @@ import { Node } from 'src/common/node.entity';
 import { Salle } from 'src/Modules/salle/entities/salle.entity';
 import { User } from 'src/Modules/user/entities/user.entity';
 
-@Entity('aboutus')
+@Entity()
 export class Aboutus extends Node {
   @Column('text')
   communityHighlight: string;

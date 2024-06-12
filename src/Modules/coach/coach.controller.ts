@@ -56,12 +56,14 @@ export class CoachController {
     return this.coachService.findOne(id);
   }
 
-  @Put(':id')
+  @Post(':id')
+  @UseInterceptors(FileInterceptor('file'))
   async update(
     @Param('id') id: string,
     @Body() updateCoachDto: UpdateCoachDto,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    return await this.coachService.update(id, updateCoachDto); // Correction ici
+    return await this.coachService.update(id, file, updateCoachDto); // Correction ici
   }
 
   @Delete(':id')

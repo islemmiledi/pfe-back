@@ -55,12 +55,14 @@ export class AboutusController {
     return this.aboutusService.findOne(id); // Convertissez 'id' en nombre si votre ID est numérique
   }
 
-  @Put(':id')
+  @Post(':id')
+  @UseInterceptors(FileInterceptor('file'))
   async update(
     @Param('id') id: string,
-    @Body() updateAboutUsDto: UpdateAboutUsDto,
+    @Body() updateAboutusDto: UpdateAboutUsDto,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    return await this.aboutusService.update(id, updateAboutUsDto);
+    return await this.aboutusService.update(id, file, updateAboutusDto);
   }
 
   @Delete(':id')

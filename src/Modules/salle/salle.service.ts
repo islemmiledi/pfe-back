@@ -5,6 +5,7 @@ import { Salle } from './entities/salle.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { TypeTheme } from './enum/type.enum';
 
 @Injectable()
 export class SalleService {
@@ -37,26 +38,10 @@ export class SalleService {
         'aboutuss',
         'footers',
         'homes',
+        'produits',
       ],
     });
   }
-
-  // async findOneByWebsite(website: string): Promise<Salle> {
-  //   try {
-  //     const salle = await this._salleRepo.findOne({
-  //       where: { websites: website },
-  //       relations: ['program', 'coachs', 'offres', 'footers', 'aboutuss'],
-  //     });
-  //     if (!salle) {
-  //       console.log('No salle found for website:', website);
-  //       return null; // Or handle as you see fit
-  //     }
-  //     return salle;
-  //   } catch (error) {
-  //     console.error('Failed to fetch salle:', error);
-  //     throw new Error('Database query failed');
-  //   }
-  // }
 
   async update(id: string, updateSalleDto: UpdateSalleDto) {
     return await this._salleRepo.update(id, updateSalleDto);
@@ -64,5 +49,22 @@ export class SalleService {
 
   async remove(id: string) {
     return await this._salleRepo.delete(id);
+  }
+
+  async findSallesByTheme(theme: string): Promise<Salle[]> {
+    switch (theme) {
+      case 'silver':
+        return await this._salleRepo.find({
+          where: { Typetheme: TypeTheme.SILVER },
+        });
+      case 'premium':
+        return await this._salleRepo.find({
+          where: { Typetheme: TypeTheme.PREMIUM },
+        });
+      case 'gold':
+        return await this._salleRepo.find({
+          where: { Typetheme: TypeTheme.GOLD },
+        });
+    }
   }
 }

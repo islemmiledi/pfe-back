@@ -9,7 +9,7 @@ import { Node } from 'src/common/node.entity';
 import { User } from 'src/Modules/user/entities/user.entity';
 import { Salle } from 'src/Modules/salle/entities/salle.entity';
 
-@Entity('coachs') // Assurez-vous que 'coatchs' est le nom correct de la table.
+@Entity() // Assurez-vous que 'coatchs' est le nom correct de la table.
 export class Coach extends Node {
   @Column({ length: 100 })
   Nom: string; // Nom du coach

@@ -3,7 +3,7 @@ import { Node } from 'src/common/node.entity';
 import { Salle } from 'src/Modules/salle/entities/salle.entity';
 import { User } from 'src/Modules/user/entities/user.entity';
 
-@Entity('offres')
+@Entity()
 export class Offre extends Node {
   @Column({ type: 'varchar', length: 255 })
   typeoffre: string;

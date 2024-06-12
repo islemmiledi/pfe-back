@@ -9,7 +9,7 @@ import { Node } from 'src/common/node.entity';
 import { Salle } from 'src/Modules/salle/entities/salle.entity';
 import { User } from 'src/Modules/user/entities/user.entity';
 
-@Entity('program')
+@Entity()
 export class Program extends Node {
   @Column({ length: 100 })
   title: string;

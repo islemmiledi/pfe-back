@@ -63,8 +63,17 @@ export class CoachService {
     return await this._coachRepo.findOneBy({ id: id });
   }
 
-  async update(id: string, updateCoachDto: UpdateCoachDto) {
-    return await this._coachRepo.update(id, updateCoachDto);
+  async update(
+    id: string,
+    file: Express.Multer.File,
+    updateCoachDto: UpdateCoachDto,
+  ) {
+    const image = await this.cloudinary.uploadImage(file);
+
+    return await this._coachRepo.update(id, {
+      ...updateCoachDto,
+      file: image.secure_url,
+    });
   }
 
   async remove(id: string) {

@@ -1,34 +1,44 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOrdreDto } from './dto/create-ordre.dto';
-import { UpdateOrdreDto } from './dto/update-ordre.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
+import { UserOrdre } from './entities/userordre.entity';
 import { Ordre } from './entities/ordre.entity';
+import { CreateUserOrdreDto } from './dto/create-userordre.dto';
 
 @Injectable()
 export class OrdreService {
   constructor(
+    @InjectRepository(UserOrdre)
+    private userRepository: Repository<UserOrdre>,
+
     @InjectRepository(Ordre)
-    private readonly _ordreRepo: Repository<Ordre>,
+    private ordreRepository: Repository<Ordre>,
   ) {}
 
-  async create(createOrdreDto: CreateOrdreDto) {
-    return await this._ordreRepo.save(createOrdreDto);
+  async create(createUserDto: CreateUserOrdreDto) {
+    const { user, order } = createUserDto;
+    const newUser = this.userRepository.create(user);
+    const savedUser = await this.userRepository.save(newUser);
+
+    const orders =
+      order &&
+      order.map((orderData) => {
+        const newOrder = this.ordreRepository.create(orderData);
+        newOrder.userordre = savedUser;
+
+        return newOrder;
+      });
+
+    await this.ordreRepository.save(orders);
+
+    return savedUser;
   }
 
-  async findAll(): Promise<Ordre[]> {
-    return await this._ordreRepo.find();
-  }
-
-  async findOne(id: string): Promise<Ordre> {
-    return await this._ordreRepo.findOneBy({ id: id });
-  }
-
-  async update(id: string, updateOrdreDto: UpdateOrdreDto) {
-    return await this._ordreRepo.update(id, updateOrdreDto);
-  }
-
-  async remove(id: string) {
-    return await this._ordreRepo.delete(id);
+  async findAllUsersOrders() {
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.ordres', 'order')
+      .getMany();
   }
 }

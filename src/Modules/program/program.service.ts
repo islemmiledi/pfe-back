@@ -61,44 +61,24 @@ export class ProgramService {
     return `This action returns a #${id} program`;
   }
   async getProgramsByUser(user: User) {
-    return await this._programRepo.find({where:{userId:user.id},order:{createdAt:'ASC'}});
-      
+    return await this._programRepo.find({
+      where: { userId: user.id },
+      order: { createdAt: 'ASC' },
+    });
   }
 
   async update(
     id: string,
+    file: Express.Multer.File,
     updateProgramDto: UpdateProgramDto,
-    file?: Express.Multer.File,
   ) {
-    try {
-      const programToUpdate = await this._programRepo.findOne({
-        where: { id: id },
-      });
+    const image = await this.cloudinary.uploadImage(file);
 
-      if (!programToUpdate) {
-        throw new NotFoundException('Program not found');
-      }
-
-      if (file) {
-        const image = await this.cloudinary.uploadImage(file);
-        updateProgramDto.file = image.secure_url; // Updating the image URL
-      }
-
-      // Merge the new data with existing data
-      const updatedProgram = await this._programRepo.save({
-        ...programToUpdate,
-        ...updateProgramDto,
-      });
-
-      return updatedProgram;
-    } catch (error) {
-      if (error.code === 'ER_DUP_ENTRY') {
-        throw new ConflictException('This gym must appear for one gerant');
-      }
-      throw error; // Ensure to rethrow the error if it is not handled above
-    }
+    return await this._programRepo.update(id, {
+      ...updateProgramDto,
+      file: image.secure_url,
+    });
   }
-
   async remove(id: string) {
     return await this._programRepo.delete(id);
   }

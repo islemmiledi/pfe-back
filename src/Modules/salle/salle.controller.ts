@@ -9,6 +9,7 @@ import {
   Put,
   UseInterceptors,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
 import { SalleService } from './salle.service';
 import { CreateSalleDto } from './dto/create-salle.dto';
@@ -38,10 +39,10 @@ export class SalleController {
     return this.salleService.findOne(id); // Convertissez 'id' en nombre si votre ID est numérique
   }
 
-  // @Post(':website') // Utilisez le paramètre 'id' dans l'URL
-  // async findOneByWebsite(@Param('website') website: string) {
-  //   return await this.salleService.findOneByWebsite(website); // Convertissez 'id' en nombre si votre ID est numérique
-  // }
+  @Post(':theme') // Utilisez le paramètre 'id' dans l'URL
+  async findSallesByTheme(@Param('theme') theme: string) {
+    return await this.salleService.findSallesByTheme(theme); // Convertissez 'id' en nombre si votre ID est numérique
+  }
 
   @Put(':id')
   async update(

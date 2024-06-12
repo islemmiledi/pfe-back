@@ -1,26 +1,30 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Node } from 'src/common/node.entity';
+import { UserOrdre } from './userordre.entity';
 
-@Entity('ordre') // Le nom 'ordres' est le nom de la table dans votre base de données
+@Entity() // Le nom 'ordres' est le nom de la table dans votre base de données
 export class Ordre extends Node {
-  @Column()
-  Adressemembre: string; // Adresse du membre qui passe la commande
+  @Column({ length: 100 })
+  name: string;
 
-  @Column()
-  ville: string; // Ville de livraison
+  @Column('text')
+  description: string;
 
-  @Column()
-  Numdetelephone: string; // Numéro de téléphone du membre
+  @Column({ default: 0 })
+  total: number;
 
-  @Column()
-  Codepostal: string; // Code postal de l'adresse de livraison
+  @Column({ default: 0 })
+  price: number;
 
-  @Column('decimal', { precision: 10, scale: 2 })
-  Prixtotal: number; // Prix total de la commande
+  @Column({ default: 0 })
+  quantity: number;
 
-  @Column()
-  Quantite: number; // Quantité totale des produits commandés
+  @Column({ default: '' })
+  image: string;
 
-  @Column({ nullable: true }) // Rendre l'attribut image optionnel
-  Image?: string; // Image ou lien vers une image du produit principal de la commande
+  @Column({ default: '' })
+  product: string;
+
+  @ManyToOne(() => UserOrdre, (user) => user.ordres)
+  userordre: UserOrdre;
 }

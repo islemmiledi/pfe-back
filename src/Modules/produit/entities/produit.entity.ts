@@ -1,7 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Node } from 'src/common/node.entity';
+import { User } from 'src/Modules/user/entities/user.entity';
+import { Salle } from 'src/Modules/salle/entities/salle.entity';
 
-@Entity('produit')
+@Entity()
 export class Produit extends Node {
   @Column({ length: 100 })
   Nomproduit: string;
@@ -9,12 +17,27 @@ export class Produit extends Node {
   @Column('text')
   Description: string;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column({ default: 0 })
   Prix: number;
 
-  @Column({ nullable: true })
-  Image?: string;
+  @Column({ default: '' })
+  file: string;
 
-  @Column({ length: 100 })
-  Categorie: string;
+  @ManyToOne(() => User, (user) => user.produits, {
+    eager: false,
+    onDelete: 'CASCADE',
+  })
+  user: User;
+
+  @Column()
+  userId: string;
+
+  @ManyToOne(() => Salle, (salle) => salle.produits, { eager: false })
+  salle: Salle;
+
+  @JoinColumn() // specify the name of the column in the junction tableColumn()
+  salleId: string;
+
+  // @Column({ length: 100 })
+  // Categorie: string;
 }

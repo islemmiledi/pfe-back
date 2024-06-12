@@ -10,32 +10,20 @@ import {
 
 export class CreateOrdreDto {
   @IsNotEmpty()
-  @IsString()
-  Adressemembre: string;
+  name: string;
 
   @IsNotEmpty()
-  @IsString()
-  Ville: string;
+  description: string;
 
   @IsNotEmpty()
-  @IsPhoneNumber()
-  Numdetelephone: string;
+  price: number;
 
   @IsNotEmpty()
-  @IsString()
-  Codepostal: string;
+  quantity: number;
 
   @IsNotEmpty()
-  @IsNumber()
-  @Min(0)
-  Prixtotal: number;
+  image: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  @Min(1)
-  Quantite: number;
-
-  @IsOptional()
-  @IsUrl()
-  Image?: string;
+  product: string;
 }
